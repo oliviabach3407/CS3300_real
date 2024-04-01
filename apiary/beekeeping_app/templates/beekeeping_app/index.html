@@ -1,13 +1,23 @@
 <!-- inherit from base.html-->
 {% extends "beekeeping_app/base_template.html" %}
 
-
 <!-- Replace block content in base_template.html -->
 {% block content %}
-<h1>List of Apiaries</h1>
+<h1>Welcome to HIVE</h1>
 
-
-<h2>More to come from [and your name goes here]</h2>
+<h3>All Published Apiaries: </h3>
+    <!-- Display active portfolios - if they have the .is_active as True -->
+    {% for apiary in Apiaries %}
+        {% if apiary.is_published %}
+            <div class="card mb-3">
+                <div class="card-body">
+                <h5 class="card-title">Name: {{ apiary.keeper.name }}</h5>
+                <h6 class="card-subtitle mb-2 text-muted">Apiary: {{ apiary.title }}</h6>
+                <a href="{{ apiary.get_absolute_url }}" class="btn btn-primary">View Apiary</a>
+                </div>
+            </div>
+        {% endif %}
+  {% endfor %}
 
 
 {% endblock %}

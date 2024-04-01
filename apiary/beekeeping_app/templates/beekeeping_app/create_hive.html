@@ -1,0 +1,11 @@
+<!--new should show an empty form - when submitted it adds that project to the keeper's portfolio (title and description)-->
+{% extends "beekeeping_app/base_template.html" %}
+
+{% block content %}
+  <h2>Create a New Hive</h2>
+  <form action="" method="post" novalidate>
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Submit</button>
+  </form>
+{% endblock %}

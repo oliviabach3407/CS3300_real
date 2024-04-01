@@ -1,0 +1,19 @@
+{% extends "beekeeping_app/base_template.html" %}
+
+{% block content %}
+  <h1>All Public Beekeepers:</h1>
+
+  <!-- Only show students if students exist -->
+  {% if Keepers %}
+    <ul>
+      {% for keeper in Keepers %}
+        <li>
+          <!-- Display the student's name and make it a link to them -->
+          <a href="{{ keeper.get_absolute_url }}">{{ keeper.name }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p>No users available.</p>
+  {% endif %}
+{% endblock %}

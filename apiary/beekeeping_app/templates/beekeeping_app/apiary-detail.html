@@ -1,0 +1,36 @@
+{% extends "beekeeping_app/base_template.html" %}
+
+<!--
+Title, active, about, contact email
+Button to create a new project
+List of projects with view, update and delete buttons
+-->
+
+{% block content %}
+  <h1>Apiary Details</h1>
+
+  <div>
+    <h2>Title: {{ apiary.title }}</h2>
+    <p>Published: {{apiary.is_published}}</p>
+    <p>About: {{ apiary.about }}</p>
+    <p>Contact Email: {{ apiary.contact_email }}</p>
+
+    <!-- Display projects related to the portfolio -->
+    <h2>List of Hives</h2>
+    <a href="{% url 'create-hive' apiary.id %}" class="btn btn-primary">New</a>
+
+    <!-- CODE FOR LISTING PROJECTS IN A PORTFOLIO -->
+    {% for hive in apiary.hive_set.all %}
+    <div class="card mb-3">
+        <div class="card-body">
+        <h5 class="card-title">{{ hive.title }}</h5>
+        <!-- Send both the portfolio id and the project id -->
+        <a href="{{ hive.get_absolute_url }}" class="btn btn-primary">View</a>
+        <a href="{% url 'update-hive' apiary.id hive.id %}" class="btn btn-primary">Update</a>
+        <a href="{% url 'delete-hive' apiary.id hive.id %}" class="btn btn-primary">Delete</a>
+        </div>
+    </div>
+    {% endfor %}
+
+  </div>
+{% endblock %}

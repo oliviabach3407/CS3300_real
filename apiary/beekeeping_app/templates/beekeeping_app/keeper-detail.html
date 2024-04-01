@@ -1,0 +1,17 @@
+{% extends "beekeeping_app/base_template.html" %}
+
+<!--
+Name, email, major and ability to view portfolio or update portfolio
+-->
+
+{% block content %}
+  <h1>User Name: {{keeper.name}}</h1>
+
+  <div>
+    <p>Email: {{ keeper.email}}</p>
+    <p>Apiary: 
+        <a href="{{ keeper.apiary.get_absolute_url }}">{{keeper.apiary.title}}</a>
+        <a href="{% url 'update-apiary' keeper.id keeper.apiary.id %}" class="btn btn-primary">Update</a>
+    </p>
+  </div>
+{% endblock %}
