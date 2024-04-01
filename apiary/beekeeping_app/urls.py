@@ -1,14 +1,27 @@
 from django.urls import path
+#BUG FIX
 from django.contrib.auth import views as auth_views
 from . import views
 
 urlpatterns = [
-#path function defines a url pattern
-#'' is empty to represent based path to app
-# views.index is the function defined in views.py
-# name='index' parameter is to dynamically create url
-# example in html <a href="{% url 'index' %}">Home</a>.
+    # other patterns
     path('', views.index, name='index'),
-    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('keeper/', views.keeperView, name='keeper'),
 
+    #BUG FIX
+    path('login/', auth_views.LoginView.as_view(), name='login'),
+    path('logout/', auth_views.LoginView.as_view(), name='logout'),
+
+    #reverse paths
+    path('apiary/<int:apiary>/', views.apiaryDetail, name='apiary-detail'),
+    path('keeper/<int:keeper>/', views.keeperDetail, name='keeper-detail'),
+    path('hive/<int:hive>/', views.hiveDetail, name='hive-detail'),
+
+    #create, view, update, delete hives
+    path('hive/<int:apiary>/create-hive/', views.newHive, name='create-hive'),
+    path('hive/<int:apiary>/update-hive/<int:hive>/', views.updateHive, name='update-hive'),
+    path('hive/<int:apiary>/delete-hive/<int:hive>/', views.updateHive, name='delete-hive'),
+
+    #update apiary 
+    path('keeper/<int:keeper>/update-apiary/<int:apiary>/', views.updateApiary, name='update-apiary'),
 ]
