@@ -8,6 +8,13 @@ from django.forms import ModelForm
 class Apiary(models.Model):
 
     title = models.CharField(max_length=200)
+
+    #optional 
+    company = models.CharField(max_length=200, blank=True)
+
+    #image field (optional company logo)
+    company_logo = models.ImageField(upload_to='C:/Users/olivi/OneDrive/GitHub/CS3300_real/apiary/static/images/company_logos/', blank=True, null=True)
+
     contact_email = models.CharField(max_length=200)
     is_published = models.BooleanField(default=False)
     #might need to change the max length here

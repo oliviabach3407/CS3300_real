@@ -13,14 +13,14 @@ body {
 
 /* Links */
 a {
-    color: #9e7b33; /* Honey Gold */
+    color: #6C5423; /* Honey Gold --> darkened for contrast */
     text-decoration: none;
-    border-bottom: 1px solid #9e7b33; /* Add underline effect */
+    border-bottom: 1px solid #6C5423; /* Add underline effect */
     font-size: 18px;
 }
 
 a:hover {
-    color: #7b6a5f; /* Soft Gray */
+    color: #5F5249; /* Soft Gray --> darkened for contrast */
 }
 
 /* Buttons */
@@ -32,18 +32,18 @@ a:hover {
     cursor: pointer;
     text-align: center;
     text-decoration: none;
-    background-color: #f5e2a2; /* Pale Yellow */
-    color: #333; /* Darkened text for better contrast */
+    background-color: #6D5509; /* Pale Yellow */
+    color: #FFFF; /* White text for contrast over dark button */
     font-weight: bold; /* Make button text bold */
     font-size: 18px;
 }
 
 .btn-primary {
-    background-color: #f5e2a2; /* Pale Yellow */
+    background-color: #6D5509; /* Pale Yellow --> darkened for contrast */
 }
 
 .btn-primary:hover {
-    background-color: #c9b8a6; /* Soft Brown */
+    background-color: #473806; /* Soft Brown --> darkened for contrast */
 }
 
 /* Forms */
@@ -61,18 +61,6 @@ a:hover {
     padding: 10px;
     margin-bottom: 20px;
     border-radius: 4px;
-    font-size: 18px;
-}
-
-.message-success {
-    background-color: #eef9e3; /* Light Green */
-    color: #5c8336; /* Dark Green */
-    font-size: 18px;
-}
-
-.message-error {
-    background-color: #fce8e6; /* Light Red */
-    color: #b84d4d; /* Dark Red */
     font-size: 18px;
 }
 

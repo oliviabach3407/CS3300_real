@@ -8,6 +8,10 @@ from .forms import HiveForm
 from .forms import ApiaryForm
 from django.shortcuts import redirect
 
+#for resizing the image as it's recieved
+from PIL import Image
+from io import BytesIO
+
 # Create your views here.
 def index(request):
     # Render index.html
@@ -85,8 +89,22 @@ def updateApiary(request, keeper, apiary):
     apiary_instance = Apiary.objects.get(id=apiary)
 
     if request.method == "POST":
-        form = ApiaryForm(request.POST, instance=apiary_instance)
+        form = ApiaryForm(request.POST, request.FILES, instance=apiary_instance)
         if form.is_valid():
+            image = request.FILES.get('company_logo')
+            if image:
+                # Open the image using PIL
+                img = Image.open(image)
+                # Convert RGBA to RGB
+                if img.mode == 'RGBA':
+                    img = img.convert('RGB')
+                # Resize the image to the desired dimensions (e.g., 300x300)
+                img.thumbnail((40, 40))
+                # Save the resized image to a BytesIO buffer
+                output = BytesIO()
+                img.save(output, format='JPEG')
+                # Save the resized image to the FileField
+                apiary_instance.company_logo.save(image.name, output)
             form.save()
             return redirect('apiary-detail', apiary_instance.id) 
     else:
