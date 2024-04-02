@@ -20,6 +20,8 @@ class ApiaryForm(forms.ModelForm):
         fields = '__all__'
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
+            'company': forms.TextInput(attrs={'class': 'form-control'}),
+            'company_logo': forms.FileInput(attrs={'class': 'form-control-file'}),  # FileInput for uploading files
             'contact_email': forms.TextInput(attrs={'class': 'form-control'}),
             'is_published': forms.CheckboxInput(attrs={'class': 'form-check-input'}), #a checkbox
             'about': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),

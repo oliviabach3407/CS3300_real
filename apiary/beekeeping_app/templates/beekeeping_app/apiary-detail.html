@@ -11,13 +11,22 @@ List of projects with view, update and delete buttons
 
   <div>
     <h2>Title: {{ apiary.title }}</h2>
+    
+    <h3>Company: {{ apiary.company }}
+      {% if apiary.company_logo %}
+      <img src="{{ apiary.company_logo.url }}" alt="{{ apiary.title }} Logo">
+      {% endif %}
+    </h3>
+
+
     <p>Published: {{apiary.is_published}}</p>
     <p>About: {{ apiary.about }}</p>
     <p>Contact Email: {{ apiary.contact_email }}</p>
 
     <!-- Display projects related to the portfolio -->
-    <h2>List of Hives</h2>
+    <h2>List of Hives:</h2>
     <a href="{% url 'create-hive' apiary.id %}" class="btn btn-primary">New</a>
+    <p>__________________________________________________________________________________________</p>
 
     <!-- CODE FOR LISTING PROJECTS IN A PORTFOLIO -->
     {% for hive in apiary.hive_set.all %}

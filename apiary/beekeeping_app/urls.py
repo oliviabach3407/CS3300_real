@@ -3,6 +3,10 @@ from django.urls import path
 from django.contrib.auth import views as auth_views
 from . import views
 
+#for image
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     # other patterns
     path('', views.index, name='index'),
@@ -24,4 +28,4 @@ urlpatterns = [
 
     #update apiary 
     path('keeper/<int:keeper>/update-apiary/<int:apiary>/', views.updateApiary, name='update-apiary'),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
