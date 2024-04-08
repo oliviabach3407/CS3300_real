@@ -17,6 +17,7 @@ class Apiary(models.Model):
 
     contact_email = models.CharField(max_length=200)
     is_published = models.BooleanField(default=False)
+    
     #might need to change the max length here
     #optional to fill out, so blank property
     about = models.CharField(max_length=400, blank = True)

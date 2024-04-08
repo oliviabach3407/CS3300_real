@@ -24,7 +24,7 @@ urlpatterns = [
     #create, view, update, delete hives
     path('hive/<int:apiary>/create-hive/', views.newHive, name='create-hive'),
     path('hive/<int:apiary>/update-hive/<int:hive>/', views.updateHive, name='update-hive'),
-    path('hive/<int:apiary>/delete-hive/<int:hive>/', views.updateHive, name='delete-hive'),
+    path('hive/<int:apiary>/delete-hive/<int:hive>/', views.deleteHive, name='delete-hive'),
 
     #update apiary 
     path('keeper/<int:keeper>/update-apiary/<int:apiary>/', views.updateApiary, name='update-apiary'),
