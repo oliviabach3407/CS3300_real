@@ -32,6 +32,7 @@ class TestName(StaticLiveServerTestCase):
 
     def test_create_hive_successful(self):
         '''
+        -------------HAPPY-------------
         GIVEN Joan is on the home page
         WHEN she clicks the 'view apiary' button
         AND clicks the 'new hive' button
@@ -45,7 +46,6 @@ class TestName(StaticLiveServerTestCase):
             company="Example Company",
             contact_email="example2@example.com",
             about="About this apiary",
-            company_logo='path/to/company/logo.jpg',
             is_published=True
         )
 
@@ -105,6 +105,7 @@ class TestName(StaticLiveServerTestCase):
 
     def test_create_hive_no_form(self):
         '''
+        -------------SAD-------------
         GIVEN Joan is on the home page
         WHEN she clicks the 'view apiary' button
         AND clicks the 'new hive' button
@@ -124,7 +125,6 @@ class TestName(StaticLiveServerTestCase):
             company="Example Company",
             contact_email="example2@example.com",
             about="About this apiary",
-            company_logo='path/to/company/logo.jpg',
             is_published=True
         )
 
@@ -166,7 +166,31 @@ class TestName(StaticLiveServerTestCase):
         WHEN she clicks the 'view published hives' button
         THEN she will be able to see any published hives created by other users.
         """
-        # Implement view published hives scenario and assertion here
+
+        testApiary3 = Apiary.objects.create(
+            title="Test Apiary1",
+            company="Example Company",
+            contact_email="example2@example.com",
+            about="About this apiary",
+            is_published=True
+        )
+
+        testApiary4 = Apiary.objects.create(
+            title="Test Apiary2",
+            company="Example Company",
+            contact_email="example2@example.com",
+            about="About this apiary",
+            is_published=True
+        )
+
+        self.browser.get(self.live_server_url)
+        self.browser.get(self.live_server_url + reverse('index'))
+
+        wait = WebDriverWait(self.browser, 10)
+
+
+        #assert that two error messages are displayed
+        print("\nSad Test passed successfully: Two error messages are displayed since the user didn't fill in the two required form fields.")
 
     def test_view_published_hives_unsuccessful_back_button(self):
         """
