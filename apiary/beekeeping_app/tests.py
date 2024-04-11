@@ -28,7 +28,6 @@ class TestName(StaticLiveServerTestCase):
 
     def setUp(self):
         super().setUp()
-        # Populate the database here (if necessary)
 
     def test_create_hive_successful(self):
         '''

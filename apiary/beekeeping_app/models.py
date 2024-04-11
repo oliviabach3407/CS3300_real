@@ -32,28 +32,6 @@ class Apiary(models.Model):
     def get_absolute_url(self):
         return reverse('apiary-detail', args=[str(self.id)])
 
-#an Apiary should have MANY hives (one-to-many)
-class Hive(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.CharField(max_length=400)
-
-    #one apiary, many hives
-    apiary = models.ForeignKey(Apiary, on_delete=models.CASCADE)
-
-    #Define default String to return the name for representing the Model object."
-    def __str__(self):
-        return self.title
-
-    #Returns the URL to access a particular instance of MyModelName.
-    #if you define this method then Django will automatically
-    # add a "View on Site" button to the model's record editing screens in the Admin site
-    def get_absolute_url(self):
-        return reverse('hive-detail', args=[str(self.id)])
-    
-class HiveForm(ModelForm):
-    class Meta:
-        model = Hive
-        fields = ["title", "description"]
 
 class Keeper(models.Model):
 
@@ -73,3 +51,39 @@ class Keeper(models.Model):
     # add a "View on Site" button to the model's record editing screens in the Admin site
     def get_absolute_url(self):
         return reverse('keeper-detail', args=[str(self.id)])
+    
+
+#calendar model???
+class Event(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+
+    
+
+#an Apiary should have MANY hives (one-to-many)
+class Hive(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.CharField(max_length=400)
+
+    #one apiary, many hives
+    apiary = models.ForeignKey(Apiary, on_delete=models.CASCADE)
+
+    #one hive, one calendar
+    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+
+    #Define default String to return the name for representing the Model object."
+    def __str__(self):
+        return self.title
+
+    #Returns the URL to access a particular instance of MyModelName.
+    #if you define this method then Django will automatically
+    # add a "View on Site" button to the model's record editing screens in the Admin site
+    def get_absolute_url(self):
+        return reverse('hive-detail', args=[str(self.id)])
+    
+class HiveForm(ModelForm):
+    class Meta:
+        model = Hive
+        fields = ["title", "description"]
