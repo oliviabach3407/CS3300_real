@@ -58,16 +58,6 @@ class Keeper(models.Model):
     # add a "View on Site" button to the model's record editing screens in the Admin site
     def get_absolute_url(self):
         return reverse('keeper-detail', args=[str(self.id)])
-    
-
-# #calendar model???
-# class Event(models.Model):
-#     title = models.CharField(max_length=200)
-#     description = models.TextField()
-#     start_time = models.DateTimeField()
-#     end_time = models.DateTimeField()
-
-    
 
 #an Apiary should have MANY hives (one-to-many)
 class Hive(models.Model):
@@ -94,3 +84,22 @@ class HiveForm(ModelForm):
     class Meta:
         model = Hive
         fields = ["title", "description"]
+    
+class Calendar(models.Model):
+    hive = models.OneToOneField(Hive, on_delete=models.CASCADE, related_name='calendar')
+
+#each calendar can have MULTIPLE events
+class Event(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    start_time = models.DateTimeField()
+    end_time = models.DateTimeField()
+    calendar = models.ForeignKey('Calendar', on_delete=models.CASCADE, related_name='events')
+
+    def __str__(self):
+        return self.title
+
+    @property
+    def get_html_url(self):
+        url = reverse('event_edit', args=(self.calendar.hive_id, self.id))
+        return f'<a href="{url}"> {self.title} </a>'

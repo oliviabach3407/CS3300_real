@@ -1,12 +1,14 @@
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, render
 from django.http import HttpResponse
 from .models import Apiary
 from .models import Keeper
 from .models import Hive
-#from .models import Event
+from .models import Calendar
+from .models import Event
 
 from .forms import HiveForm
 from .forms import ApiaryForm
+from .forms import EventForm
 
 #authentication
 from django.contrib.auth import authenticate, login, logout
@@ -31,12 +33,17 @@ from PIL import Image
 from io import BytesIO
 
 #calendars:
-# from datetime import datetime
-# from django.views import generic
-# from django.utils.safestring import mark_safe
-# from .utils import Calendar
-# from .models import Event
+from datetime import datetime
+from django.views import generic
+from django.utils.safestring import mark_safe
+from .utils import Calendar
 
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+import calendar
+from datetime import timedelta
+from django.http import HttpResponseRedirect
 
 # Create your views here.
 def index(request):
@@ -76,22 +83,24 @@ def hiveDetail(request, hive):
 def newHive(request, apiary_id):
     apiary_instance = Apiary.objects.get(pk=apiary_id)
 
-    #can do this because of our reverse reference
+    # Can do this because of our reverse reference
     if apiary_instance.keeper.user != request.user:
         raise PermissionDenied("You don't have permission to edit this hive.")
     
     if request.method == "POST":
-        form = HiveForm(request.POST)
-        if form.is_valid():
-            hive = form.save(commit=False)
+        hive_form = HiveForm(request.POST)
+        if hive_form.is_valid():
+            hive = hive_form.save(commit=False)
             hive.apiary = apiary_instance  # Associate the hive with the apiary
             hive.save()
-            return redirect('hive-detail', hive.id)
-        
-    else:
-        form = HiveForm()
 
-    return render(request, 'beekeeping_app/create_hive.html', {'apiary': apiary_instance, 'form': form})
+            #calendar_instance = Calendar.objects.create(hive=hive)
+
+            return redirect('hive-detail', hive.id)
+    else:
+        hive_form = HiveForm()
+
+    return render(request, 'beekeeping_app/create_hive.html', {'apiary': apiary_instance, 'form': hive_form})
 
 
 #update should show the existing hive with the fields filled and editable
@@ -166,30 +175,79 @@ def updateApiary(request, keeper, apiary):
     return render(request, 'beekeeping_app/update_apiary.html', {'apiary': apiary_instance, 'form': form})
 
 #calendar views:
+@login_required(login_url='login')
+@allowed_users(allowed_roles=['beekeeper_role'])
+def editCalendar(request, hive_id):
+    hive_instance = Hive.objects.get(id=hive_id)
+    calendar = hive_instance.calendar
 
-# class CalendarView(generic.ListView):
-#     model = Event
-#     template_name = 'cal/calendar.html'
+    # Get the events related to the calendar
+    events = calendar.events.all()
 
-#     def get_context_data(self, **kwargs):
-#         context = super().get_context_data(**kwargs)
+    # Initialize a calendar object with today's date
+    d = getDate(request.GET.get('day', None))
+    cal = Calendar(d.year, d.month)
 
-#         # use today's date for the calendar
-#         d = get_date(self.request.GET.get('day', None))
+    # Add events to the calendar
+    for event in events:
+        cal.add_event(event.title, event.start_time, event.end_time)
 
-#         # Instantiate our calendar class with today's year and date
-#         cal = Calendar(d.year, d.month)
+    # Generate HTML for the calendar
+    html_cal = cal.formatmonth(withyear=True)
 
-#         # Call the formatmonth method, which returns our calendar as a table
-#         html_cal = cal.formatmonth(withyear=True)
-#         context['calendar'] = mark_safe(html_cal)
-#         return context
+    return render(request, 'beekeeping_app/edit-calendar.html', {'hive': hive_instance, 'calendar': calendar, 'beekeeping_app/calendar.html': mark_safe(html_cal)})
 
-# def get_date(req_day):
-#     if req_day:
-#         year, month = (int(x) for x in req_day.split('-'))
-#         return datetime.date(year, month, day=1)
-#     return datetime.today()
+def calendarView(request, hive_id):
+    # Retrieve the hive associated with the hive_id from the URL
+    hive_instance = Hive.objects.get(id=hive_id)
+    
+    # Retrieve the month from the request GET parameters or use the current month
+    month = request.GET.get('month')
+    d = getDate(month) if month else getDate(None)
+
+    # Filter events by the associated hive
+    events = Event.objects.filter(calendar__hive=hive_instance)
+
+    # Instantiate our calendar class with the requested month
+    cal = Calendar(d.year, d.month)
+
+    # Call the formatmonth method, which returns our calendar as a table
+    html_cal = cal.formatmonth(withyear=True)
+
+    # Add previous and next month information to the context
+    prev_month = prevMonth(d)
+    next_month = nextMonth(d)
+
+    # Prepare context data
+    context = {
+        'calendar': mark_safe(html_cal),
+        'prev_month': prev_month,
+        'next_month': next_month,
+        'hive_id': hive_id,
+        'events': events 
+    }
+
+    return render(request, 'beekeeping_app/calendar.html', context)
+    
+def prevMonth(d):
+    first = d.replace(day=1)
+    prev_month = first - timedelta(days=1)
+    month = 'month=' + str(prev_month.year) + '-' + str(prev_month.month)
+    return month
+
+def nextMonth(d):
+    days_in_month = calendar.monthrange(d.year, d.month)[1]
+    last = d.replace(day=days_in_month)
+    next_month = last + timedelta(days=1)
+    month = 'month=' + str(next_month.year) + '-' + str(next_month.month)
+    return month
+
+#get the current day based on imported libraries
+def getDate(req_day):
+    if req_day:
+        year, month = map(int, req_day.split('-'))
+        return datetime(year, month, day=1)
+    return datetime.today()
 
 #authentication for registering a user:
 def registerPage(request):

@@ -12,8 +12,10 @@
             <a href="{{ hive.apiary.get_absolute_url }}">{{hive.apiary.title}}</a>
         </p>
 
-        {% comment %} <p>Calendar:</p>
-        {{ hive.event }} {% endcomment %}
+        <p>Calendar:</p>
+        {{ hive.event }} 
+
+        <a href="{% url 'calendar' hive_id=hive.id %}" class="btn btn-primary">View Calendar</a>
 
     </div>
 {% endblock %}

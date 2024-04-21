@@ -30,5 +30,9 @@ urlpatterns = [
 
     #update apiary 
     path('keeper/<int:keeper>/update-apiary/<int:apiary>/', views.updateApiary, name='update-apiary'),
-    
+
+    #calendar??
+    path('hive/<int:hive_id>/edit-calendar/', views.editCalendar, name='edit-calendar'),
+    path('hive/<int:hive_id>/calendar/', views.calendarView, name='calendar'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
