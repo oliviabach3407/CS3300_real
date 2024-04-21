@@ -40,6 +40,6 @@ class CreateUserForm(UserCreationForm):
 
 class BeekeeperForm(forms.ModelForm):
     class Meta:
-        model: Keeper
+        model = Keeper
         fields = '__all__'
-        exclude = ['user', 'portfolio']
+        exclude = ['user', 'apiary']

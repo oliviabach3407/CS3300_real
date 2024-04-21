@@ -1,11 +1,12 @@
 {% extends "beekeeping_app/base_template.html" %}
 {% block content %}
-  <h3>HIVE Beekeeper Profile</h3>
-    Welcome, {{user}}
-    apiary id: {{user.keeper.apiary.id}}
+  <h3><strong>HIVE Beekeeper Profile</h3>
+    <p>Welcome, {{user}}</p>
+    <p>Apiary id: {{user.keeper.apiary.id}}</p>
+
     <p><strong>Apiary:{{user.keeper.apiary.title}}
         <a class="btn btn-primary" href="{{ user.keeper.apiary.get_absolute_url }}" role="button">View</a>
-        <a class="btn btn-primary" href="{% url 'update-apiary' keeper.id keeper.apiary.id %}" role="button">Update</a>
+        <a href="{% url 'update-apiary' keeper.id keeper.apiary.id %}" class="btn btn-primary">Update</a>
 
     <h3>Beekeeper Information</h3>
 

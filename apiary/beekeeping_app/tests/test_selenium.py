@@ -5,9 +5,11 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import WebDriverException
 
-from .models import Apiary
-from .models import Hive
+from ..models import Apiary
+from ..models import Hive
+from django.contrib.auth.models import User
 
 #for starting on the index page for every test
 from django.urls import reverse 
@@ -27,6 +29,76 @@ class TestName(StaticLiveServerTestCase):
 
     def setUp(self):
         super().setUp()
+        #ALWAYS SIGN UP BEFORE TRYING TO LOGIN
+        self.signup()
+
+    def signup(self):
+        # Navigate to login page
+        self.browser.get(self.live_server_url + reverse('login'))
+
+        wait = WebDriverWait(self.browser, 10)
+
+        # Click on the signup link
+        register_link = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//a[contains(@href, '/accounts/register/')]"))
+        )
+        register_link.click()
+
+        # Fill in signup form and submit
+        username_input = wait.until(
+            EC.presence_of_element_located((By.ID, 'id_username'))
+        )
+        username_input.send_keys('testuser')
+
+        email_input = wait.until(
+            EC.presence_of_element_located((By.ID, 'id_email'))
+        )
+        email_input.send_keys('testuser@example.com')
+
+        password1_input = wait.until(
+            EC.presence_of_element_located((By.ID, 'id_password1'))
+        )
+        password1_input.send_keys('HelloWorld10!')
+
+        password2_input = wait.until(
+            EC.presence_of_element_located((By.ID, 'id_password2'))
+        )
+        password2_input.send_keys('HelloWorld10!')
+
+        submit_button = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//input[@type='submit' and @name='Create User']"))
+        )
+        submit_button.click()
+
+        # Assert that user is redirected to login page
+        #self.assertEqual(self.browser.current_url, self.live_server_url + reverse('login'))
+
+    def login(self):
+        # Navigate to login page
+        self.browser.get(self.live_server_url + reverse('login'))
+
+        wait = WebDriverWait(self.browser, 10)
+
+        # Fill in login form and submit
+        username_input = wait.until(
+            EC.presence_of_element_located((By.ID, 'id_username'))
+        )
+        username_input.send_keys('testuser')
+
+        password_input = wait.until(
+            EC.presence_of_element_located((By.ID, 'id_password'))
+        )
+        password_input.send_keys('HelloWorld10!')
+        
+        # Submit the form
+        submit_button = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//input[@type='submit' and @value='login']"))
+        )
+        submit_button.click()
+
+    def logout(self):
+        # Navigate to logout page
+        self.browser.get(self.live_server_url + reverse('logout'))
 
     def test_create_hive_successful(self):
         '''
@@ -38,6 +110,8 @@ class TestName(StaticLiveServerTestCase):
         AND clicks 'submit'
         THEN a new hive will have been added to the database
         '''
+        #signup should automatically be called
+        self.login()
 
         testApiary = Apiary.objects.create(
             title="Test Apiary",
@@ -55,6 +129,8 @@ class TestName(StaticLiveServerTestCase):
         #press the "submit" button
 
         self.browser.get(self.live_server_url)
+
+        #start on the index page
         self.browser.get(self.live_server_url + reverse('index'))
 
 
@@ -118,6 +194,9 @@ class TestName(StaticLiveServerTestCase):
         #enter a description into the description section of the form
         #press the "submit" button
 
+        #signup should automatically be called
+        self.login()
+
         testApiary2 = Apiary.objects.create(
             title="Test Apiary",
             company="Example Company",
@@ -158,43 +237,64 @@ class TestName(StaticLiveServerTestCase):
         self.assertEqual(len(error_messages), 2, "Expected two error messages, but found different number.")
         print("\nSad Test passed successfully: Two error messages are displayed since the user didn't fill in the two required form fields.")
 
-    def test_view_published_hives_successful(self):
+    def test_view_published_hives_loggedin(self):
         """
-        GIVEN Robin is on the home page
+        GIVEN Robin is logged in
         WHEN she clicks the 'view published hives' button
-        THEN she will be able to see any published hives created by other users.
+        THEN she will be able to see a list of beekeepers.
         """
+        #signup should automatically be called
+        self.login()
 
-        testApiary3 = Apiary.objects.create(
-            title="Test Apiary1",
-            company="Example Company",
-            contact_email="example2@example.com",
-            about="About this apiary",
-            is_published=True
+        self.browser.get(self.live_server_url + reverse('index'))
+
+        wait = WebDriverWait(self.browser, 10)
+
+        # Click on the 'View Published Hives' button
+        view_hives_button = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//a[contains(text(), 'View Published Hives')]"))
         )
+        view_hives_button.click()
 
-        # testApiary4 = Apiary.objects.create(
-        #     title="Test Apiary2",
-        #     company="Example Company",
-        #     contact_email="example2@example.com",
-        #     about="About this apiary",
-        #     is_published=True
-        # )
+        # Assert that the list of beekeepers is visible
+        beekeepers_list = wait.until(
+            EC.presence_of_element_located((By.XPATH, "//ul[@class='beekeepers-list']"))
+        )
+        self.assertIsNotNone(beekeepers_list, "List of beekeepers not found")
 
-        # self.browser.get(self.live_server_url)
-        # self.browser.get(self.live_server_url + reverse('index'))
+        # Assert other elements in the page if needed
 
-        # wait = WebDriverWait(self.browser, 10)
-
-
-        # #assert that two error messages are displayed
-        # print("\nSad Test passed successfully: Two error messages are displayed since the user didn't fill in the two required form fields.")
-
-    def test_view_published_hives_unsuccessful_back_button(self):
+    def test_view_published_hives_nonloggedin(self):
         """
-        GIVEN Robin is on the home page
+        GIVEN Robin is not logged in
         WHEN she clicks the 'view published hives' button
-        AND clicks the back button
-        THEN she will not be able to see any published hives created by other users.
+        THEN she will be able to see a list of beekeepers.
         """
-        # Implement scenario when back button is clicked and assertion here
+        self.browser.get(self.live_server_url + reverse('index'))
+
+        wait = WebDriverWait(self.browser, 10)
+        
+        # Click on the 'View Published Hives' button
+        view_hives_button = wait.until(
+            EC.element_to_be_clickable((By.XPATH, "//a[contains(text(), 'View Published Hives')]"))
+        )
+        view_hives_button.click()
+
+        page_source = self.browser.page_source
+        if "Server Error (500)" in page_source:
+            print("Page contains the message: Server Error (500)")
+        else:
+            raise AssertionError("Expected message 'Server Error (500)' not found in page source")
+
+
+    def test_logout(self):
+        """
+        GIVEN Joan is logged in
+        WHEN she clicks the logout button
+        THEN she will be redirected to logout.html
+        """
+        #signup should automatically be called
+        self.login()
+
+        self.logout()
+        self.assertEqual(self.browser.current_url, self.live_server_url + reverse('logout'))

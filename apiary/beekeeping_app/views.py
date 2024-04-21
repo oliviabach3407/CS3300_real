@@ -213,21 +213,19 @@ def registerPage(request):
     return render(request, 'registration/register.html', context)
 
 @login_required(login_url='login')
-@allowed_users(allowed_roles=['student'])
+@allowed_users(allowed_roles=['beekeeper_role'])
 def userPage(request):
     keeper = request.user.keeper
-    form = BeekeeperForm(instance = keeper)
-    print('keeper', keeper)
+
+    form = BeekeeperForm(instance=keeper)
     apiary = keeper.apiary
-    print(apiary)
     if request.method == 'POST':
         form = BeekeeperForm(request.POST, request.FILES, instance=keeper)
         if form.is_valid():
             form.save()
-    context = {'apiaries':apiary, 'form':form}
+    context = {'apiaries': apiary, 'keeper': keeper, 'form': form}
     return render(request, 'beekeeping_app/user.html', context)
 
 def logoutView(request):
     logout(request)
     return render(request, 'registration/logout.html') 
-
