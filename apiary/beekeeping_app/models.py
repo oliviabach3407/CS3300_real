@@ -2,6 +2,9 @@ from django.db import models
 from django.urls import reverse
 from django.forms import ModelForm
 
+#permissions
+from django.contrib.auth.models import User
+
 # Create your models here.
 
 #a keeper should have only ONE apiary (one-to-one)
@@ -40,7 +43,11 @@ class Keeper(models.Model):
     #removed blank = true
 
     #one keeper, one apiary
-    apiary = models.OneToOneField(Apiary, on_delete=models.CASCADE)
+    #apiary = models.OneToOneField(Apiary, on_delete=models.CASCADE)
+    apiary = models.OneToOneField(Apiary, on_delete=models.CASCADE, related_name='keeper')
+
+    #for authentication
+    user = models.OneToOneField(User, null=True, on_delete=models.CASCADE)
 
     #Define default String to return the name for representing the Model object."
     def __str__(self):
@@ -53,12 +60,12 @@ class Keeper(models.Model):
         return reverse('keeper-detail', args=[str(self.id)])
     
 
-#calendar model???
-class Event(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    start_time = models.DateTimeField()
-    end_time = models.DateTimeField()
+# #calendar model???
+# class Event(models.Model):
+#     title = models.CharField(max_length=200)
+#     description = models.TextField()
+#     start_time = models.DateTimeField()
+#     end_time = models.DateTimeField()
 
     
 
@@ -71,7 +78,7 @@ class Hive(models.Model):
     apiary = models.ForeignKey(Apiary, on_delete=models.CASCADE)
 
     #one hive, one calendar
-    event = models.ForeignKey(Event, on_delete=models.CASCADE)
+    #event = models.ForeignKey(Event, on_delete=models.CASCADE)
 
     #Define default String to return the name for representing the Model object."
     def __str__(self):

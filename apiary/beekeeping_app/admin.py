@@ -5,9 +5,9 @@ from django.contrib import admin
 from .models import Keeper
 from .models import Apiary
 from .models import Hive
-from .models import Event
+#from .models import Event
 
 admin.site.register(Keeper)
 admin.site.register(Apiary)
 admin.site.register(Hive)
-admin.site.register(Event)
+#admin.site.register(Event)

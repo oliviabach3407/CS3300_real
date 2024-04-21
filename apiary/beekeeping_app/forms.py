@@ -1,6 +1,10 @@
 from django import forms
 from .models import Hive
 from .models import Apiary
+from .models import Keeper
+
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
 
 #all hive forms use this base:
 class HiveForm(forms.ModelForm):
@@ -17,7 +21,8 @@ class HiveForm(forms.ModelForm):
 class ApiaryForm(forms.ModelForm):
     class Meta:
         model = Apiary
-        fields = '__all__'
+        #shouldn't be able to edit their ownership
+        exclude = ['owner']
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'company': forms.TextInput(attrs={'class': 'form-control'}),
@@ -27,3 +32,14 @@ class ApiaryForm(forms.ModelForm):
             'about': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
         }
 
+#authentication
+class CreateUserForm(UserCreationForm):
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
+class BeekeeperForm(forms.ModelForm):
+    class Meta:
+        model: Keeper
+        fields = '__all__'
+        exclude = ['user', 'portfolio']

@@ -31,10 +31,11 @@
             <a class="nav-link nav-item-large" href="{% url 'keeper'%}">Public Users</a>
 
             {% if user.is_authenticated %}
-              <a class="nav-link nav-item-large" href="{% url 'logout' %}?next={{ request.path }}">Logout {{keeper}}</a>
+            <a class="nav-link nav-item-large" href="{% url 'logout' %}?next={{ request.path }}">Logout {{ request.user }}</a>
             {% else %}
-              <a class="nav-link nav-item-large" href="{% url 'login' %}?next={{ request.path }}">Login</a>
+            <a class="nav-link nav-item-large" href="{% url 'login' %}?next={{ request.path }}">Login</a>
             {% endif %}
+
           </div>
         </div>
       </div>

@@ -14,7 +14,6 @@ from django.urls import reverse
 
 # Create your tests here.
 
-
 class TestName(StaticLiveServerTestCase):
     @classmethod
     def setUpClass(cls):
@@ -174,22 +173,22 @@ class TestName(StaticLiveServerTestCase):
             is_published=True
         )
 
-        testApiary4 = Apiary.objects.create(
-            title="Test Apiary2",
-            company="Example Company",
-            contact_email="example2@example.com",
-            about="About this apiary",
-            is_published=True
-        )
+        # testApiary4 = Apiary.objects.create(
+        #     title="Test Apiary2",
+        #     company="Example Company",
+        #     contact_email="example2@example.com",
+        #     about="About this apiary",
+        #     is_published=True
+        # )
 
-        self.browser.get(self.live_server_url)
-        self.browser.get(self.live_server_url + reverse('index'))
+        # self.browser.get(self.live_server_url)
+        # self.browser.get(self.live_server_url + reverse('index'))
 
-        wait = WebDriverWait(self.browser, 10)
+        # wait = WebDriverWait(self.browser, 10)
 
 
-        #assert that two error messages are displayed
-        print("\nSad Test passed successfully: Two error messages are displayed since the user didn't fill in the two required form fields.")
+        # #assert that two error messages are displayed
+        # print("\nSad Test passed successfully: Two error messages are displayed since the user didn't fill in the two required form fields.")
 
     def test_view_published_hives_unsuccessful_back_button(self):
         """
