@@ -10,6 +10,9 @@ from django.conf.urls.static import static
 urlpatterns = [
     #other patterns
     path('', views.index, name='index'),
+    path('hive/<int:hive_id>/calendar/', views.calendarView, name='calendar'),
+
+    
     path('keeper/', views.keeperView, name='keeper'),
 
     #authentication

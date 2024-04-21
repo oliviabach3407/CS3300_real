@@ -47,7 +47,7 @@ from django.http import HttpResponseRedirect
 
 # Create your views here.
 def index(request):
-    # Render index.html
+    #render index.html
 
     all_apiarys = Apiary.objects.all() 
 
@@ -83,7 +83,7 @@ def hiveDetail(request, hive):
 def newHive(request, apiary_id):
     apiary_instance = Apiary.objects.get(pk=apiary_id)
 
-    # Can do this because of our reverse reference
+    #can do this because of our reverse reference
     if apiary_instance.keeper.user != request.user:
         raise PermissionDenied("You don't have permission to edit this hive.")
     
@@ -91,7 +91,7 @@ def newHive(request, apiary_id):
         hive_form = HiveForm(request.POST)
         if hive_form.is_valid():
             hive = hive_form.save(commit=False)
-            hive.apiary = apiary_instance  # Associate the hive with the apiary
+            hive.apiary = apiary_instance  #associate the hive with the apiary
             hive.save()
 
             #calendar_instance = Calendar.objects.create(hive=hive)
@@ -155,17 +155,17 @@ def updateApiary(request, keeper, apiary):
         if form.is_valid():
             image = request.FILES.get('company_logo')
             if image:
-                # Open the image using PIL
+                #open the image using PIL
                 img = Image.open(image)
-                # Convert RGBA to RGB
+                #convert RGBA to RGB
                 if img.mode == 'RGBA':
                     img = img.convert('RGB')
-                # Resize the image to the desired dimensions (e.g., 300x300)
+                #resize the image to the desired dimensions (e.g., 300x300)
                 img.thumbnail((40, 40))
-                # Save the resized image to a BytesIO buffer
+                #save the resized image to a BytesIO buffer
                 output = BytesIO()
                 img.save(output, format='JPEG')
-                # Save the resized image to the FileField
+                #save the resized image to the FileField
                 apiary_instance.company_logo.save(image.name, output)
             form.save()
             return redirect('apiary-detail', apiary_instance.id) 
@@ -181,44 +181,44 @@ def editCalendar(request, hive_id):
     hive_instance = Hive.objects.get(id=hive_id)
     calendar = hive_instance.calendar
 
-    # Get the events related to the calendar
+    #get the events related to the calendar
     events = calendar.events.all()
 
-    # Initialize a calendar object with today's date
+    #initialize a calendar object with today's date
     d = getDate(request.GET.get('day', None))
     cal = Calendar(d.year, d.month)
 
-    # Add events to the calendar
+    #add events to the calendar
     for event in events:
         cal.add_event(event.title, event.start_time, event.end_time)
 
-    # Generate HTML for the calendar
+    #generate HTML for the calendar
     html_cal = cal.formatmonth(withyear=True)
 
     return render(request, 'beekeeping_app/edit-calendar.html', {'hive': hive_instance, 'calendar': calendar, 'beekeeping_app/calendar.html': mark_safe(html_cal)})
 
 def calendarView(request, hive_id):
-    # Retrieve the hive associated with the hive_id from the URL
+    #retrieve the hive associated with the hive_id from the URL
     hive_instance = Hive.objects.get(id=hive_id)
     
-    # Retrieve the month from the request GET parameters or use the current month
+    #retrieve the month from the request GET parameters or use the current month
     month = request.GET.get('month')
     d = getDate(month) if month else getDate(None)
 
-    # Filter events by the associated hive
+    #filter events by the associated hive
     events = Event.objects.filter(calendar__hive=hive_instance)
 
-    # Instantiate our calendar class with the requested month
+    #instantiate our calendar class with the requested month
     cal = Calendar(d.year, d.month)
 
-    # Call the formatmonth method, which returns our calendar as a table
+    #call the formatmonth method, which returns our calendar as a table
     html_cal = cal.formatmonth(withyear=True)
 
-    # Add previous and next month information to the context
+    #add previous and next month information to the context
     prev_month = prevMonth(d)
     next_month = nextMonth(d)
 
-    # Prepare context data
+    #group context data
     context = {
         'calendar': mark_safe(html_cal),
         'prev_month': prev_month,

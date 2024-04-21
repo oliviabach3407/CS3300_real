@@ -6,4 +6,4 @@ class BeekeepingAppConfig(AppConfig):
     name = 'beekeeping_app'
 
     def ready(self):
-        import beekeeping_app.signals  # Import signals module
+        import beekeeping_app.signals  #iport signals module (might be unnecessary)

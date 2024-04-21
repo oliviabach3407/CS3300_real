@@ -12,7 +12,7 @@ class Calendar(HTMLCalendar):
         events_per_day = events.filter(start_time__day=day)
         d = ''
         for event in events_per_day:
-            # Generate a clickable link for each event
+            #generate a clickable link for each event
             d += f'<li>{event.get_html_url}</li>'
 
         if day != 0:

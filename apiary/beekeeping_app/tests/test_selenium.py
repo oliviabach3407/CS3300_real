@@ -33,18 +33,18 @@ class TestName(StaticLiveServerTestCase):
         self.signup()
 
     def signup(self):
-        # Navigate to login page
+        #navigate to login page
         self.browser.get(self.live_server_url + reverse('login'))
 
         wait = WebDriverWait(self.browser, 10)
 
-        # Click on the signup link
+        #click on the signup link
         register_link = wait.until(
             EC.element_to_be_clickable((By.XPATH, "//a[contains(@href, '/accounts/register/')]"))
         )
         register_link.click()
 
-        # Fill in signup form and submit
+        #fill in signup form and submit
         username_input = wait.until(
             EC.presence_of_element_located((By.ID, 'id_username'))
         )
@@ -70,16 +70,16 @@ class TestName(StaticLiveServerTestCase):
         )
         submit_button.click()
 
-        # Assert that user is redirected to login page
+        #assert that user is redirected to login page?
         #self.assertEqual(self.browser.current_url, self.live_server_url + reverse('login'))
 
     def login(self):
-        # Navigate to login page
+        #navigate to login page
         self.browser.get(self.live_server_url + reverse('login'))
 
         wait = WebDriverWait(self.browser, 10)
 
-        # Fill in login form and submit
+        #fill in login form and submit
         username_input = wait.until(
             EC.presence_of_element_located((By.ID, 'id_username'))
         )
@@ -90,14 +90,14 @@ class TestName(StaticLiveServerTestCase):
         )
         password_input.send_keys('HelloWorld10!')
         
-        # Submit the form
+        #submit the form
         submit_button = wait.until(
             EC.element_to_be_clickable((By.XPATH, "//input[@type='submit' and @value='login']"))
         )
         submit_button.click()
 
     def logout(self):
-        # Navigate to logout page
+        #navigate to logout page
         self.browser.get(self.live_server_url + reverse('logout'))
 
     def test_create_hive_successful(self):
@@ -171,10 +171,10 @@ class TestName(StaticLiveServerTestCase):
         #check if the new hive exists in the database
         new_hive = Hive.objects.filter(title=new_hive_title, description=new_hive_description).first()
 
-        # Assert that the new hive object is found in the database
+        #assert that the new hive object is found in the database
         self.assertIsNotNone(new_hive, "New hive object not found in the database")
 
-        # Print success message if the assertion passes
+        #print success message if the assertion passes
         print("\nHappy Test passed successfully: New hive object found in the database.")
 
     def test_create_hive_no_form(self):
@@ -250,19 +250,19 @@ class TestName(StaticLiveServerTestCase):
 
         wait = WebDriverWait(self.browser, 10)
 
-        # Click on the 'View Published Hives' button
+        #click on the 'View Published Hives' button
         view_hives_button = wait.until(
             EC.element_to_be_clickable((By.XPATH, "//a[contains(text(), 'View Published Hives')]"))
         )
         view_hives_button.click()
 
-        # Assert that the list of beekeepers is visible
+        #assert that the list of beekeepers is visible
         beekeepers_list = wait.until(
             EC.presence_of_element_located((By.XPATH, "//ul[@class='beekeepers-list']"))
         )
         self.assertIsNotNone(beekeepers_list, "List of beekeepers not found")
 
-        # Assert other elements in the page if needed
+        #assert other elements in the page if needed
 
     def test_view_published_hives_nonloggedin(self):
         """
@@ -273,8 +273,8 @@ class TestName(StaticLiveServerTestCase):
         self.browser.get(self.live_server_url + reverse('index'))
 
         wait = WebDriverWait(self.browser, 10)
-        
-        # Click on the 'View Published Hives' button
+
+        #click on the 'View Published Hives' button
         view_hives_button = wait.until(
             EC.element_to_be_clickable((By.XPATH, "//a[contains(text(), 'View Published Hives')]"))
         )

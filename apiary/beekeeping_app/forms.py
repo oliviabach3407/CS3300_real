@@ -30,7 +30,7 @@ class ApiaryForm(forms.ModelForm):
         widgets = {
             'title': forms.TextInput(attrs={'class': 'form-control'}),
             'company': forms.TextInput(attrs={'class': 'form-control'}),
-            'company_logo': forms.FileInput(attrs={'class': 'form-control-file'}),  # FileInput for uploading files
+            'company_logo': forms.FileInput(attrs={'class': 'form-control-file'}),  #fileInput for uploading files
             'contact_email': forms.TextInput(attrs={'class': 'form-control'}),
             'is_published': forms.CheckboxInput(attrs={'class': 'form-check-input'}), #a checkbox
             'about': forms.Textarea(attrs={'class': 'form-control', 'rows': 5}),
@@ -52,7 +52,7 @@ class BeekeeperForm(forms.ModelForm):
 class EventForm(ModelForm):
   class Meta:
     model = Event
-    # datetime-local is a HTML5 input type, format to make date time show on fields
+    #datetime-local is a HTML5 input type, format to make date time show on fields
     widgets = {
       'start_time': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
       'end_time': DateInput(attrs={'type': 'datetime-local'}, format='%Y-%m-%dT%H:%M'),
@@ -61,6 +61,6 @@ class EventForm(ModelForm):
 
   def __init__(self, *args, **kwargs):
     super(EventForm, self).__init__(*args, **kwargs)
-    # input_formats to parse HTML5 datetime-local input to datetime field
+    #input_formats to parse HTML5 datetime-local input to datetime field
     self.fields['start_time'].input_formats = ('%Y-%m-%dT%H:%M',)
     self.fields['end_time'].input_formats = ('%Y-%m-%dT%H:%M',)
