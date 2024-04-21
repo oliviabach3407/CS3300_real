@@ -86,7 +86,7 @@ def newHive(request, apiary_id):
             hive = form.save(commit=False)
             hive.apiary = apiary_instance  # Associate the hive with the apiary
             hive.save()
-            return redirect('hive-detail', hive_id=hive.id)
+            return redirect('hive-detail', hive.id)
         
     else:
         form = HiveForm()
