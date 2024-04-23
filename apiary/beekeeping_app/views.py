@@ -53,8 +53,9 @@ def index(request):
 
     return render( request, 'beekeeping_app/index.html', {'Apiaries': all_apiarys})
 
-@login_required(login_url='login')
-@allowed_users(allowed_roles=['beekeeper_role'])
+# @login_required(login_url='login')
+# @allowed_users(allowed_roles=['beekeeper_role'])
+#want them to be able to view all keepers when not logged in
 def keeperView(request):
     all_keepers = Keeper.objects.all()
     #pass all keepers to the html file 
