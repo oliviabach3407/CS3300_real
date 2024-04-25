@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 import os
 from pathlib import Path
 
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # Update your BASE_DIR to use pathlib.Path
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -40,6 +41,16 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'beekeeping_app',
+    'django_nose', #for test coverage
+]
+
+# Use nose to run all tests
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+
+# Tell nose to measure coverage on the 'foo' and 'bar' apps
+NOSE_ARGS = [
+    '--with-coverage',
+    '--cover-package=beekeeping_app',
 ]
 
 AUTHENTICATION_BACKENDS = [
